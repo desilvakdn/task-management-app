@@ -19,8 +19,8 @@ const Input: React.FC<InputType> = ({ icon, type, ...props }) => {
         name=""
         id=""
         className={twMerge(
-          "b1 min-w-[408px] rounded-lg border-[1px] border-solid border-dark-50 p-3 font-normal",
-          icon && "pl-10",
+          "b1 rounded-lg border-[1px] border-solid border-dark-50 p-3 font-normal sm:min-w-[408px]",
+          icon && "pl-11",
         )}
         {...props}
       />
