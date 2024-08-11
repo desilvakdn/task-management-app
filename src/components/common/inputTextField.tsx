@@ -8,9 +8,9 @@ interface InputType extends React.HTMLAttributes<HTMLInputElement> {
   [key: string]: any;
 }
 
-const Input: React.FC<InputType> = ({ icon, type, ...props }) => {
+const TextField: React.FC<InputType> = ({ icon, type, ...props }) => {
   return (
-    <div className="relative">
+    <div className="relative w-full">
       {icon && (
         <span className="absolute left-3 top-1/2 -translate-y-1/2">{icon}</span>
       )}
@@ -28,4 +28,4 @@ const Input: React.FC<InputType> = ({ icon, type, ...props }) => {
   );
 };
 
-export { Input };
+export { TextField };
