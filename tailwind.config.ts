@@ -8,11 +8,6 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
       colors: {
         primary: {
           900: "#00112C",
@@ -81,6 +76,12 @@ const config: Config = {
         black: "#1C1C1C",
         white: "#FFFFFF",
         whiteBg: "#F6F6F6",
+      },
+      boxShadow: {
+        "custom-shadow": "0 0 4px 0 rgba(0, 0, 0, 0.04)",
+      },
+      borderWidth: {
+        "1": "1px",
       },
     },
   },
