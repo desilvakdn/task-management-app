@@ -1,6 +1,7 @@
 import React from "react";
 import TaskColumn from "./taskColumn";
 import { TaskInfoTypes } from "@/types/taskInfo";
+import TaskSideBar from "./taskSideBar";
 
 const TaskTab = () => {
   const Tasks: TaskInfoTypes[] = [
@@ -71,6 +72,7 @@ const TaskTab = () => {
       <TaskColumn categoryId={0} tasks={Tasks} />
       <TaskColumn categoryId={1} tasks={Tasks} />
       <TaskColumn categoryId={2} tasks={Tasks} />
+      <TaskSideBar />
     </div>
   );
 };
