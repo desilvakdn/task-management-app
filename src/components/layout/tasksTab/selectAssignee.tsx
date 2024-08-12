@@ -10,38 +10,47 @@ import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 
 interface SelectAssigneeTypes extends React.HTMLAttributes<HTMLDivElement> {
-  currentAssignee: AssigneeType;
+  currentAssignee?: AssigneeType;
   changeassignee: (assignee: AssigneeType) => void;
+  children?: React.ReactNode;
 }
 
 const SelectAssignee = ({
   currentAssignee,
   changeassignee,
+  children,
 }: SelectAssigneeTypes) => {
   const { Config, updateConfig } = useDataStore({
     isAssigneePopOpen: false,
   });
   return (
     <div className="relative">
-      <button
-        type="button"
-        onClick={updateConfig.bind(this, "isAssigneePopOpen", true)}
-        className={twMerge(
-          "border-1 relative flex aspect-square w-12 items-center justify-center overflow-hidden rounded-full border-dashed border-dark-100",
-          currentAssignee.profilePic && "border-none",
-        )}
-      >
-        {currentAssignee.profilePic ? (
-          <Image
-            src={currentAssignee.profilePic}
-            alt="profile-pic"
-            layout="fill"
-            objectFit="cover"
-          />
-        ) : (
-          <User />
-        )}
-      </button>
+      {children && (
+        <div onClick={updateConfig.bind(this, "isAssigneePopOpen", true)}>
+          {children}
+        </div>
+      )}
+      {!children && (
+        <button
+          type="button"
+          onClick={updateConfig.bind(this, "isAssigneePopOpen", true)}
+          className={twMerge(
+            "relative flex aspect-square w-12 items-center justify-center overflow-hidden rounded-full border-1 border-dashed border-dark-100",
+            currentAssignee?.profilePic && "border-none",
+          )}
+        >
+          {currentAssignee?.profilePic ? (
+            <Image
+              src={currentAssignee.profilePic}
+              alt="profile-pic"
+              layout="fill"
+              objectFit="cover"
+            />
+          ) : (
+            <User />
+          )}
+        </button>
+      )}
       {Config.isAssigneePopOpen && (
         <FloatingWrapper
           close={updateConfig.bind(this, "isAssigneePopOpen", false)}

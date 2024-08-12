@@ -14,9 +14,15 @@ interface SelectDateTypes {
   deadline: Date | undefined;
   setDeadline: (date: Date | undefined) => void;
   isError?: boolean;
+  children?: React.ReactNode;
 }
 
-const SelectDate = ({ deadline, setDeadline, isError }: SelectDateTypes) => {
+const SelectDate = ({
+  deadline,
+  setDeadline,
+  isError,
+  children,
+}: SelectDateTypes) => {
   const [date, setDate] = useState<Date | undefined>(deadline);
 
   useEffect(() => {
@@ -29,18 +35,20 @@ const SelectDate = ({ deadline, setDeadline, isError }: SelectDateTypes) => {
     <div className="relative flex items-center justify-center">
       <Popover>
         <PopoverTrigger asChild>
-          <button
-            type="button"
-            className={twMerge(
-              "flex items-center justify-center rounded-full border-1 border-dashed border-dark-100",
-              !date && "aspect-square w-12",
-              date &&
-                "c1 whitespace-nowrap rounded-sm border-none bg-primary-50 px-[6px] py-1 font-medium text-primary-500",
-              isError && "border-danger-500 bg-danger-50 text-danger-500",
-            )}
-          >
-            {date ? formatDate(date) : <CalenderIcon />}
-          </button>
+          {children || (
+            <button
+              type="button"
+              className={twMerge(
+                "flex items-center justify-center rounded-full border-1 border-dashed border-dark-100",
+                !date && "aspect-square w-12",
+                date &&
+                  "c1 whitespace-nowrap rounded-sm border-none bg-primary-50 px-[6px] py-1 font-medium text-primary-500",
+                isError && "border-danger-500 bg-danger-50 text-danger-500",
+              )}
+            >
+              {date ? formatDate(date) : <CalenderIcon />}
+            </button>
+          )}
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
           <Calendar

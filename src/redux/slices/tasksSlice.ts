@@ -37,6 +37,16 @@ const tasksSlice = createSlice({
       state.viewTaskId = action.payload;
       setToLocalStorage("tasks", state);
     },
+    deleteTask(state, action: PayloadAction<string>) {
+      const existingTask = state.tasks.find(
+        (task) => task.id === action.payload,
+      );
+      if (!existingTask) return;
+      state.tasks = [...state.tasks].filter(
+        (task) => task.id !== action.payload,
+      );
+      setToLocalStorage("tasks", state);
+    },
   },
 });
 
@@ -48,5 +58,9 @@ export const addViewTask = (taskId: string) => {
   store.dispatch(pushViewTask(taskId));
 };
 
-export const { pushTask, pushViewTask } = tasksSlice.actions;
+export const removeTask = (taskId: string) => {
+  store.dispatch(deleteTask(taskId));
+};
+
+export const { pushTask, pushViewTask, deleteTask } = tasksSlice.actions;
 export default tasksSlice;

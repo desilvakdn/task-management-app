@@ -20,7 +20,7 @@ const FloatingWrapper = ({
   return (
     <div
       ref={ref}
-      className="b1 border-1 absolute mt-1 flex flex-col gap-1 rounded-lg border-solid border-dark-50 bg-white p-3 font-medium"
+      className="b1 absolute z-10 mt-1 flex flex-col gap-1 rounded-lg border-1 border-solid border-dark-50 bg-white p-3 font-medium"
       style={{ top: `calc(100% + 6px)` }}
     >
       {wrappedChildren}
