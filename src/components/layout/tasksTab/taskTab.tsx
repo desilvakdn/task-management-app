@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import TaskColumn from "./taskColumn";
-import TaskSideBar from "./taskSideBar";
+import TaskSideBar from "./taskSidebar/taskSideBar";
 import TASKCATEGORIES from "@/lib/taskCategories";
 
 const TaskTab = () => {

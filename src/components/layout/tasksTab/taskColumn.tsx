@@ -8,6 +8,8 @@ import { TaskInfoTypes } from "@/types/taskInfo";
 import { twMerge } from "tailwind-merge";
 import TASKCATEGORIES from "@/lib/taskCategories";
 import { getTasks } from "@/redux/selectors/taskSelector";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
 
 interface TaskColumnTypes {
   categoryId: number;
@@ -15,18 +17,15 @@ interface TaskColumnTypes {
 
 const TaskColumn = ({ categoryId }: TaskColumnTypes) => {
   const [Tasks, setTasks] = useState<TaskInfoTypes[]>([]);
+  const allTasks = useSelector((state: RootState) => state.tasks.tasks);
 
-  const fetchTasks = useCallback(() => {
+  useEffect(() => {
     const tasksFromStore = getTasks();
     const relaventTasks = tasksFromStore.filter(
       (task) => task.categoryId === categoryId,
     );
     setTasks(relaventTasks);
-  }, [categoryId]);
-
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+  }, [categoryId, allTasks]);
 
   const { Config, updateConfig } = useDataStore({
     isNeedToAddTask: false,
@@ -78,7 +77,7 @@ const TaskColumn = ({ categoryId }: TaskColumnTypes) => {
           <AddTask
             close={updateConfig.bind(this, "isNeedToAddTask", false)}
             categoryId={categoryId}
-            onTaskAdded={fetchTasks}
+            onTaskAdded={() => {}}
           />
         )}
         {!Config.isNeedToAddTask && (
