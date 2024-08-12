@@ -1,25 +1,39 @@
 "use client";
 import useDataStore from "@/hooks/useDataStore";
 import { Add } from "iconsax-react";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AddTask from "./addTask";
 import TaskCard from "./taskCard";
 import { TaskInfoTypes } from "@/types/taskInfo";
 import { twMerge } from "tailwind-merge";
+import TASKCATEGORIES from "@/lib/taskCategories";
+import { getTasks } from "@/redux/selectors/taskSelector";
 
 interface TaskColumnTypes {
-  tasks: TaskInfoTypes[];
   categoryId: number;
 }
 
-const TaskColumn = ({ tasks, categoryId }: TaskColumnTypes) => {
-  const relaventTasks = tasks.filter((task) => task.categoryId === categoryId);
+const TaskColumn = ({ categoryId }: TaskColumnTypes) => {
+  const [Tasks, setTasks] = useState<TaskInfoTypes[]>([]);
+
+  const fetchTasks = useCallback(() => {
+    const tasksFromStore = getTasks();
+    const relaventTasks = tasksFromStore.filter(
+      (task) => task.categoryId === categoryId,
+    );
+    setTasks(relaventTasks);
+  }, [categoryId]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
   const { Config, updateConfig } = useDataStore({
     isNeedToAddTask: false,
   });
 
   return (
-    <div className="border-1 w-full min-w-[364px] rounded-xl border-dashed border-dark-100 bg-whiteBg p-4">
+    <div className="w-full min-w-[364px] rounded-xl border-1 border-dashed border-dark-100 bg-whiteBg p-4">
       <div
         id="column-header"
         className="flex w-full items-center justify-between rounded-lg bg-white p-4"
@@ -28,18 +42,18 @@ const TaskColumn = ({ tasks, categoryId }: TaskColumnTypes) => {
           <div
             className={twMerge(
               "aspect-square w-5 rounded-full border-2",
-              categoryId === 0 && "border-warning-500",
-              categoryId === 1 && "border-info-500",
-              categoryId === 2 && "border-success-500",
+              categoryId === TASKCATEGORIES.todo && "border-warning-500",
+              categoryId === TASKCATEGORIES.inprogress && "border-info-500",
+              categoryId === TASKCATEGORIES.completed && "border-success-500",
             )}
           ></div>
           <label htmlFor="" className="b2 font-semibold">
-            {categoryId === 0 && "To Do"}
-            {categoryId === 1 && "In Progress"}
-            {categoryId === 2 && "Completed"}
+            {categoryId === TASKCATEGORIES.todo && "To Do"}
+            {categoryId === TASKCATEGORIES.inprogress && "In Progress"}
+            {categoryId === TASKCATEGORIES.completed && "Completed"}
           </label>
           <span className="c1 flex aspect-square w-5 items-center justify-center rounded-full bg-primary-50 px-[6px] py-[2px] font-semibold text-primary-500">
-            {relaventTasks.length}
+            {Tasks.length}
           </span>
         </div>
         <label
@@ -56,12 +70,16 @@ const TaskColumn = ({ tasks, categoryId }: TaskColumnTypes) => {
       </div>
 
       <div className="mt-6 flex flex-col gap-3">
-        {relaventTasks.map((task, index) => (
+        {Tasks.map((task, index) => (
           <TaskCard key={index} TaskInfo={task} />
         ))}
 
         {Config.isNeedToAddTask && (
-          <AddTask close={updateConfig.bind(this, "isNeedToAddTask", false)} />
+          <AddTask
+            close={updateConfig.bind(this, "isNeedToAddTask", false)}
+            categoryId={categoryId}
+            onTaskAdded={fetchTasks}
+          />
         )}
         {!Config.isNeedToAddTask && (
           <button

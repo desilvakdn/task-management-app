@@ -36,7 +36,7 @@ const SelectDate = ({ deadline, setDeadline, isError }: SelectDateTypes) => {
           <button
             type="button"
             className={twMerge(
-              "border-1 flex items-center justify-center rounded-full border-dashed border-dark-100",
+              "flex items-center justify-center rounded-full border-1 border-dashed border-dark-100",
               !date && "aspect-square w-12",
               date &&
                 "c1 whitespace-nowrap rounded-sm border-none bg-primary-50 px-[6px] py-1 font-medium text-primary-500",

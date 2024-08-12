@@ -1,3 +1,4 @@
+"use client";
 import formatDate from "@/utils/formatDate";
 import { Clock, TickCircle, User } from "iconsax-react";
 import Image from "next/image";
@@ -6,17 +7,26 @@ import { twMerge } from "tailwind-merge";
 import { Calendar } from "iconsax-react";
 import { TaskInfoTypes } from "@/types/taskInfo";
 import remainingDays from "@/utils/remainingDays";
+import { addViewTask } from "@/redux/slices/tasksSlice";
 
 const TaskCard = ({ TaskInfo }: { TaskInfo: TaskInfoTypes }) => {
+  const addTaskView = () => {
+    const taskId = TaskInfo.id;
+    addViewTask(taskId);
+  };
+
   return (
     <div
+      onClick={addTaskView}
       draggable
-      className="border-1 flex w-full flex-col rounded-xl border-dark-50 bg-white text-dark-300"
+      className="flex w-full flex-col rounded-xl border-1 border-dark-50 bg-white text-dark-300"
     >
       <TaskHeader TaskInfo={TaskInfo} />
-      <div className="p-4 text-justify">
-        <p>{TaskInfo.description?.slice(0, 110)}...</p>
-      </div>
+      {TaskInfo.description && (
+        <div className="p-4 text-justify">
+          <p>{TaskInfo.description?.slice(0, 110)}...</p>
+        </div>
+      )}
       <TaskAttributes TaskInfo={TaskInfo} />
       <TaskRemainTime TaskInfo={TaskInfo} />
     </div>
@@ -25,7 +35,7 @@ const TaskCard = ({ TaskInfo }: { TaskInfo: TaskInfoTypes }) => {
 
 const TaskHeader = ({ TaskInfo }: { TaskInfo: TaskInfoTypes }) => {
   return (
-    <div className="border-b-1 relative flex flex-row items-center gap-3 border-dark-50 p-4">
+    <div className="relative flex flex-row items-center gap-3 border-b-1 border-dark-50 p-4">
       {TaskInfo.categoryId === 2 ? (
         <span className="text-success-500">
           <TickCircle variant="Bold" />
@@ -46,7 +56,7 @@ const TaskAttributes = ({ TaskInfo }: { TaskInfo: TaskInfoTypes }) => {
       <div className="flex flex-row gap-2">
         <div
           className={twMerge(
-            "border-1 relative flex aspect-square w-12 items-center justify-center overflow-hidden rounded-full border-dashed border-dark-100",
+            "relative flex aspect-square w-12 items-center justify-center overflow-hidden rounded-full border-1 border-dashed border-dark-100",
             TaskInfo.assignee.profilePic && "border-none",
           )}
         >
@@ -63,7 +73,7 @@ const TaskAttributes = ({ TaskInfo }: { TaskInfo: TaskInfoTypes }) => {
         </div>
         <label
           className={twMerge(
-            "border-1 flex items-center justify-center rounded-full border-dashed border-dark-100",
+            "flex items-center justify-center rounded-full border-1 border-dashed border-dark-100",
             !TaskInfo.deadline && "aspect-square w-12",
             TaskInfo.deadline &&
               "c1 whitespace-nowrap rounded-sm border-none bg-primary-50 px-[6px] py-1 font-medium text-primary-500",
@@ -75,7 +85,7 @@ const TaskAttributes = ({ TaskInfo }: { TaskInfo: TaskInfoTypes }) => {
 
       <label
         className={twMerge(
-          "c1 border-1 rounded border-dashed border-dark-50 px-[6px] py-1",
+          "c1 rounded border-1 border-dashed border-dark-50 px-[6px] py-1",
           TaskInfo.priority &&
             "flex flex-row items-center gap-2 px-[6px] py-1 font-semibold",
           TaskInfo.priority === "Low" && "bg-success-50 text-success-500",
@@ -119,7 +129,7 @@ const TaskRemainTime = ({ TaskInfo }: { TaskInfo: TaskInfoTypes }) => {
   return (
     <div
       className={twMerge(
-        "border-t-1 flex w-full flex-row items-center gap-2 border-solid border-dark-50 p-4 font-medium text-dark-400",
+        "flex w-full flex-row items-center gap-2 border-t-1 border-solid border-dark-50 p-4 font-medium text-dark-400",
         differenceInDays < 0 && "text-danger-500",
       )}
     >
