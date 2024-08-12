@@ -1,7 +1,7 @@
 import { HambergerMenu, SearchNormal1 } from "iconsax-react";
 import Image from "next/image";
 import React from "react";
-import { Input } from "../common/input";
+import { TextField } from "../common/inputTextField";
 
 const TopNavBar = () => {
   return (
@@ -18,7 +18,7 @@ const TopNavBar = () => {
         </label>
       </div>
       <div className="flex h-full flex-grow items-center justify-between p-4">
-        <Input icon={<SearchNormal1 />} placeholder={"Search Tasks"} />
+        <TextField icon={<SearchNormal1 />} placeholder={"Search Tasks"} />
         <div className="shadow-custom-shadow border-1 flex flex-row items-center gap-2 rounded-full border-whiteBg bg-white px-2 py-1">
           <span>
             <HambergerMenu />
