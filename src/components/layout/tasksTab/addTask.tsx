@@ -11,14 +11,20 @@ import * as Yup from "yup";
 import SelectDate from "./selectDate";
 import { twMerge } from "tailwind-merge";
 import { TaskInfoTypes } from "@/types/taskInfo";
+import { addTask } from "@/redux/slices/tasksSlice";
+import generateSecretId from "@/utils/codeGenerator";
 
 interface AddTaskTypes {
   close: () => void;
+  categoryId: number;
+  onTaskAdded: () => void;
 }
 
-const AddTask = ({ close }: AddTaskTypes) => {
+const AddTask = ({ close, categoryId, onTaskAdded }: AddTaskTypes) => {
   const formik = useFormik<TaskInfoTypes>({
     initialValues: {
+      id: generateSecretId(10),
+      categoryId: categoryId,
       task: "",
       priority: "",
       assignee: {
@@ -28,7 +34,11 @@ const AddTask = ({ close }: AddTaskTypes) => {
       deadline: undefined,
     },
     onSubmit: (values) => {
-      console.log(values);
+      if (!values.deadline) return;
+      const dateIsoString = new Date(values.deadline).toISOString();
+      addTask({ ...values, deadline: dateIsoString });
+      onTaskAdded();
+      close();
     },
     validationSchema: Yup.object({
       task: Yup.string().required("Task name is required"),
@@ -41,9 +51,9 @@ const AddTask = ({ close }: AddTaskTypes) => {
   });
 
   return (
-    <div className="border-1 flex w-full flex-col rounded-xl border-dark-50 bg-white text-dark-300">
+    <div className="flex w-full flex-col rounded-xl border-1 border-dark-50 bg-white text-dark-300">
       <form onSubmit={formik.handleSubmit}>
-        <div className="border-b-1 relative flex flex-row items-center gap-3 border-dark-50 p-4">
+        <div className="relative flex flex-row items-center gap-3 border-b-1 border-dark-50 p-4">
           <TickCircle />
           <TextField
             name="task"
@@ -57,7 +67,7 @@ const AddTask = ({ close }: AddTaskTypes) => {
             onBlur={formik.handleBlur}
           />
           {formik.touched.task && formik.errors.task ? (
-            <label className="shadow-custom-shadow border-1 absolute -top-3 right-2 whitespace-nowrap rounded-md border-solid border-danger-500 bg-danger-50 px-2 text-danger-500">
+            <label className="absolute -top-3 right-2 whitespace-nowrap rounded-md border-1 border-solid border-danger-500 bg-danger-50 px-2 text-danger-500 shadow-custom-shadow">
               {formik.errors.task}
             </label>
           ) : null}
