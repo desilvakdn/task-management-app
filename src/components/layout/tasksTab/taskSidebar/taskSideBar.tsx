@@ -19,7 +19,6 @@ import Priority from "./priority";
 import Description from "./description";
 import { useFormik } from "formik";
 import { TaskInfoTypes } from "@/types/taskInfo";
-import { addTask, addViewTask, removeTask } from "@/redux/slices/tasksSlice";
 import * as Yup from "yup";
 import { getTasks } from "@/redux/selectors/taskSelector";
 import { AssigneeType } from "@/types/addTaskConfigTypes";
@@ -27,6 +26,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { twMerge } from "tailwind-merge";
 import TASKCATEGORIES from "@/lib/taskCategories";
+import { addTask, addViewTask, removeTask } from "@/redux/actions/taskActions";
 
 const TaskSideBar = () => {
   const [Task, setTask] = useState<TaskInfoTypes | null>();
@@ -45,7 +45,7 @@ const TaskSideBar = () => {
 
   const formik = useFormik<TaskInfoTypes>({
     initialValues: Task || {
-      id: "",
+      id: -1,
       categoryId: 0,
       task: "",
       priority: "",
@@ -77,7 +77,7 @@ const TaskSideBar = () => {
   }, [formik.values]);
 
   const closeSideBar = () => {
-    addViewTask("");
+    addViewTask(-1);
   };
 
   const markTaskCompleted = () => {

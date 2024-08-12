@@ -1,7 +1,7 @@
 import { AssigneeType } from "./addTaskConfigTypes";
 
 export interface TaskInfoTypes {
-  id: string;
+  id: number;
   task: string;
   categoryId: number;
   priority: string;

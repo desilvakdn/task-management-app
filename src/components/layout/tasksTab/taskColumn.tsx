@@ -1,38 +1,47 @@
 "use client";
 import useDataStore from "@/hooks/useDataStore";
 import { Add } from "iconsax-react";
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import AddTask from "./addTask";
-import TaskCard from "./taskCard";
-import { TaskInfoTypes } from "@/types/taskInfo";
 import { twMerge } from "tailwind-merge";
 import TASKCATEGORIES from "@/lib/taskCategories";
-import { getTasks } from "@/redux/selectors/taskSelector";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface TaskColumnTypes {
   categoryId: number;
+  taskLength: number;
+  children: React.ReactNode;
 }
 
-const TaskColumn = ({ categoryId }: TaskColumnTypes) => {
-  const [Tasks, setTasks] = useState<TaskInfoTypes[]>([]);
-  const allTasks = useSelector((state: RootState) => state.tasks.tasks);
-
-  useEffect(() => {
-    const tasksFromStore = getTasks();
-    const relaventTasks = tasksFromStore.filter(
-      (task) => task.categoryId === categoryId,
-    );
-    setTasks(relaventTasks);
-  }, [categoryId, allTasks]);
-
+const TaskColumn = ({ categoryId, children, taskLength }: TaskColumnTypes) => {
   const { Config, updateConfig } = useDataStore({
     isNeedToAddTask: false,
   });
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: categoryId,
+    data: {
+      type: "container",
+    },
+  });
+
   return (
-    <div className="w-full min-w-[364px] rounded-xl border-1 border-dashed border-dark-100 bg-whiteBg p-4">
+    <div
+      ref={setNodeRef}
+      style={{
+        transition,
+        transform: CSS.Translate.toString(transform),
+      }}
+      className="w-full min-w-[364px] rounded-xl border-1 border-dashed border-dark-100 bg-whiteBg p-4"
+    >
       <div
         id="column-header"
         className="flex w-full items-center justify-between rounded-lg bg-white p-4"
@@ -52,7 +61,7 @@ const TaskColumn = ({ categoryId }: TaskColumnTypes) => {
             {categoryId === TASKCATEGORIES.completed && "Completed"}
           </label>
           <span className="c1 flex aspect-square w-5 items-center justify-center rounded-full bg-primary-50 px-[6px] py-[2px] font-semibold text-primary-500">
-            {Tasks.length}
+            {taskLength}
           </span>
         </div>
         <label
@@ -69,9 +78,7 @@ const TaskColumn = ({ categoryId }: TaskColumnTypes) => {
       </div>
 
       <div className="mt-6 flex flex-col gap-3">
-        {Tasks.map((task, index) => (
-          <TaskCard key={index} TaskInfo={task} />
-        ))}
+        {children}
 
         {Config.isNeedToAddTask && (
           <AddTask

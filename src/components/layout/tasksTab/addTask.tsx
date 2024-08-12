@@ -1,8 +1,7 @@
 "use client";
 import { TextField } from "@/components/common/inputTextField";
-import useDataStore from "@/hooks/useDataStore";
-import { Calendar, TickCircle, User } from "iconsax-react";
-import React, { useEffect } from "react";
+import { TickCircle } from "iconsax-react";
+import React from "react";
 import SelectPriority from "./selectPriority";
 import SelectAssignee from "./selectAssignee";
 import { AssigneeType } from "@/types/addTaskConfigTypes";
@@ -11,8 +10,7 @@ import * as Yup from "yup";
 import SelectDate from "./selectDate";
 import { twMerge } from "tailwind-merge";
 import { TaskInfoTypes } from "@/types/taskInfo";
-import { addTask } from "@/redux/slices/tasksSlice";
-import generateSecretId from "@/utils/codeGenerator";
+import { addTask } from "@/redux/actions/taskActions";
 
 interface AddTaskTypes {
   close: () => void;
@@ -23,7 +21,7 @@ interface AddTaskTypes {
 const AddTask = ({ close, categoryId, onTaskAdded }: AddTaskTypes) => {
   const formik = useFormik<TaskInfoTypes>({
     initialValues: {
-      id: generateSecretId(10),
+      id: Math.floor(Math.random() * 9e14) + 1e14,
       categoryId: categoryId,
       task: "",
       priority: "",
