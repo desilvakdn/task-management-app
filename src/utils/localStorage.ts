@@ -1,4 +1,5 @@
 export const getFromLocalStorage = (key: string): any | null => {
+  if (typeof window === "undefined") return null;
   try {
     const fetchedData = localStorage.getItem(key);
     if (!fetchedData) return null;
@@ -10,7 +11,7 @@ export const getFromLocalStorage = (key: string): any | null => {
 };
 
 export const setToLocalStorage = (key: string, data: any): boolean => {
-  if (data === undefined) return false;
+  if (data === undefined && typeof window === "undefined") return false;
   try {
     const valueToStore =
       typeof data === "object" ? JSON.stringify(data) : String(data);
@@ -23,6 +24,7 @@ export const setToLocalStorage = (key: string, data: any): boolean => {
 };
 
 export const clearLocalStorage = (key?: string): boolean => {
+  if (typeof window === "undefined") return false;
   try {
     if (!key) {
       localStorage.clear();

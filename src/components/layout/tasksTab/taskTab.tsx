@@ -1,9 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import TaskColumn from "./taskColumn";
-import { TaskInfoTypes } from "@/types/taskInfo";
 import TaskSideBar from "./taskSideBar";
-import { getTasks } from "@/redux/slices/tasksSlice";
 import TASKCATEGORIES from "@/lib/taskCategories";
 
 const TaskTab = () => {
