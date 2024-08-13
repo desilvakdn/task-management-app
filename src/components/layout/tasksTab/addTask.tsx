@@ -1,8 +1,7 @@
 "use client";
 import { TextField } from "@/components/common/inputTextField";
-import useDataStore from "@/hooks/useDataStore";
-import { Calendar, TickCircle, User } from "iconsax-react";
-import React, { useEffect } from "react";
+import { TickCircle } from "iconsax-react";
+import React from "react";
 import SelectPriority from "./selectPriority";
 import SelectAssignee from "./selectAssignee";
 import { AssigneeType } from "@/types/addTaskConfigTypes";
@@ -11,8 +10,8 @@ import * as Yup from "yup";
 import SelectDate from "./selectDate";
 import { twMerge } from "tailwind-merge";
 import { TaskInfoTypes } from "@/types/taskInfo";
-import { addTask } from "@/redux/slices/tasksSlice";
-import generateSecretId from "@/utils/codeGenerator";
+import { addTask } from "@/redux/actions/taskActions";
+import { motion } from "framer-motion";
 
 interface AddTaskTypes {
   close: () => void;
@@ -23,7 +22,7 @@ interface AddTaskTypes {
 const AddTask = ({ close, categoryId, onTaskAdded }: AddTaskTypes) => {
   const formik = useFormik<TaskInfoTypes>({
     initialValues: {
-      id: generateSecretId(10),
+      id: Math.floor(Math.random() * 9e14) + 1e14,
       categoryId: categoryId,
       task: "",
       priority: "",
@@ -51,7 +50,12 @@ const AddTask = ({ close, categoryId, onTaskAdded }: AddTaskTypes) => {
   });
 
   return (
-    <div className="flex w-full flex-col rounded-xl border-1 border-dark-50 bg-white text-dark-300">
+    <motion.div
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0, opacity: 0 }}
+      className="flex w-full flex-col rounded-xl border-1 border-dark-50 bg-white text-dark-300"
+    >
       <form onSubmit={formik.handleSubmit}>
         <div className="relative flex flex-row items-center gap-3 border-b-1 border-dark-50 p-4">
           <TickCircle />
@@ -65,6 +69,7 @@ const AddTask = ({ close, categoryId, onTaskAdded }: AddTaskTypes) => {
             value={formik.values.task}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            autoFocus
           />
           {formik.touched.task && formik.errors.task ? (
             <label className="absolute -top-3 right-2 whitespace-nowrap rounded-md border-1 border-solid border-danger-500 bg-danger-50 px-2 text-danger-500 shadow-custom-shadow">
@@ -101,7 +106,7 @@ const AddTask = ({ close, categoryId, onTaskAdded }: AddTaskTypes) => {
           />
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

@@ -1,10 +1,10 @@
+"use client";
 import React from "react";
-import TaskTab from "./tasksTab/taskTab";
 
-const DashboardTabBody = () => {
+const DashboardTabBody = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="relative flex flex-grow flex-row justify-between gap-4 px-4 py-8">
-      <TaskTab />
+    <div className="relative flex flex-grow basis-0 flex-row justify-between gap-4 px-4 py-8">
+      {children}
     </div>
   );
 };

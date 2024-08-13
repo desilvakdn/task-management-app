@@ -1,17 +1,22 @@
-import { ModifiedTaskInfoTypes, TaskInfoTypes } from "@/types/taskInfo";
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { store } from "../store/store";
+import { ModifiedTaskInfoTypes } from "@/types/taskInfo";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getFromLocalStorage, setToLocalStorage } from "@/utils/localStorage";
+import { arrayMove } from "@dnd-kit/sortable";
 
 interface InitialStateType {
   tasks: ModifiedTaskInfoTypes[];
-  viewTaskId: string;
+  viewTaskId: number;
 }
 
-const initialState: InitialStateType = getFromLocalStorage("tasks") || {
+const taskRecord = getFromLocalStorage("tasks");
+const modifiedTaskLocalStorage = taskRecord && {
+  ...taskRecord,
+  viewTaskId: -1,
+};
+
+const initialState: InitialStateType = modifiedTaskLocalStorage || {
   tasks: [],
-  viewTaskId: "",
+  viewTaskId: -1,
 };
 
 const tasksSlice = createSlice({
@@ -32,12 +37,12 @@ const tasksSlice = createSlice({
       }
       setToLocalStorage("tasks", state);
     },
-    pushViewTask(state, action: PayloadAction<string>) {
+    pushViewTask(state, action: PayloadAction<number>) {
       if (state.viewTaskId === action.payload) return;
       state.viewTaskId = action.payload;
       setToLocalStorage("tasks", state);
     },
-    deleteTask(state, action: PayloadAction<string>) {
+    deleteTask(state, action: PayloadAction<number>) {
       const existingTask = state.tasks.find(
         (task) => task.id === action.payload,
       );
@@ -47,20 +52,62 @@ const tasksSlice = createSlice({
       );
       setToLocalStorage("tasks", state);
     },
+    sortTasks(
+      state,
+      action: PayloadAction<{
+        active: number;
+        over: number;
+      }>,
+    ) {
+      const { active, over } = action.payload;
+
+      const activeitemIndex = state.tasks.findIndex(
+        (task) => task.id === active,
+      );
+      const overitemIndex = state.tasks.findIndex((task) => task.id === over);
+      const overItem = state.tasks.find((task) => task.id === over);
+      if (!overItem) return;
+
+      let TasksListCopy = [...state.tasks];
+      TasksListCopy = arrayMove(TasksListCopy, activeitemIndex, overitemIndex);
+
+      const newActiveitemIndex = TasksListCopy.findIndex(
+        (task) => task.id === active,
+      );
+      TasksListCopy[newActiveitemIndex].categoryId = overItem?.categoryId;
+
+      state.tasks = TasksListCopy;
+
+      setToLocalStorage("tasks", state);
+    },
+    taskIntoContainer(
+      state,
+      action: PayloadAction<{
+        active: number;
+        over: number;
+      }>,
+    ) {
+      const { active, over } = action.payload;
+      const activeTask = state.tasks.find((task) => task.id === active);
+      if (!activeTask) return;
+
+      activeTask.categoryId = over;
+
+      const filtered_ = state.tasks.filter((task) => task.id !== active);
+      filtered_.push(activeTask);
+      state.tasks = filtered_;
+
+      setToLocalStorage("tasks", state);
+    },
   },
 });
 
-export const addTask = (task: ModifiedTaskInfoTypes) => {
-  store.dispatch(pushTask(task));
-};
+export const {
+  pushTask,
+  pushViewTask,
+  deleteTask,
+  sortTasks,
+  taskIntoContainer,
+} = tasksSlice.actions;
 
-export const addViewTask = (taskId: string) => {
-  store.dispatch(pushViewTask(taskId));
-};
-
-export const removeTask = (taskId: string) => {
-  store.dispatch(deleteTask(taskId));
-};
-
-export const { pushTask, pushViewTask, deleteTask } = tasksSlice.actions;
-export default tasksSlice;
+export default tasksSlice.reducer;

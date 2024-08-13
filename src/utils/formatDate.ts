@@ -1,8 +1,13 @@
 import { format } from "date-fns";
 
-function formatDate(date: Date, fullFormat: boolean = false) {
+function formatDate(date: Date | string, fullFormat: boolean = false) {
   const currentYear = new Date().getFullYear();
-  const dateYear = date.getFullYear();
+  let dateYear;
+  if (typeof date === "string") {
+    dateYear = new Date(date).getFullYear();
+  } else {
+    dateYear = date.getFullYear();
+  }
 
   const formattedDate = format(
     date,

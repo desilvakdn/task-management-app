@@ -9,7 +9,7 @@ export const getTasks = (): TaskInfoTypes[] => {
   })) as TaskInfoTypes[];
 };
 
-export const getViewTaskId = (): string => {
+export const getViewTaskId = (): number => {
   const currentState = store.getState();
   return currentState.tasks.viewTaskId;
 };
