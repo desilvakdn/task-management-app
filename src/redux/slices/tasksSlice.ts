@@ -8,7 +8,13 @@ interface InitialStateType {
   viewTaskId: number;
 }
 
-const initialState: InitialStateType = getFromLocalStorage("tasks") || {
+const taskRecord = getFromLocalStorage("tasks");
+const modifiedTaskLocalStorage = taskRecord && {
+  ...taskRecord,
+  viewTaskId: -1,
+};
+
+const initialState: InitialStateType = modifiedTaskLocalStorage || {
   tasks: [],
   viewTaskId: -1,
 };

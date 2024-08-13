@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { ModifiedTaskInfoTypes, TaskInfoTypes } from "@/types/taskInfo";
 import useDragAndDrop from "@/hooks/useDragAndDrop";
+import { AnimatePresence } from "framer-motion";
 
 const TaskTab = () => {
   const allTasks = useSelector((state: RootState) => state.tasks.tasks);
@@ -33,7 +34,7 @@ const TaskTab = () => {
   };
 
   return (
-    <div className="grid w-full grid-cols-3 gap-4">
+    <div className="flex w-full flex-row gap-4">
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
@@ -50,13 +51,20 @@ const TaskTab = () => {
               categoryId={categoryId}
               taskLength={filterTasks(categoryId).length}
             >
-              {filterTasks(categoryId).map((task, index) => (
-                <TaskCard id={task.id} key={task.id} TaskInfo={task} />
-              ))}
+              <AnimatePresence>
+                {filterTasks(categoryId).map((task, index) => (
+                  <TaskCard
+                    id={task.id}
+                    key={task.id}
+                    TaskInfo={task}
+                    animeDelay={index}
+                  />
+                ))}
+              </AnimatePresence>
             </TaskColumn>
           </SortableContext>
         ))}
-        <DragOverlay adjustScale={false}>
+        <DragOverlay adjustScale={false} style={{ rotate: "-2deg" }}>
           {Config.activeId ? (
             <TaskCard
               id={Config.activeId}

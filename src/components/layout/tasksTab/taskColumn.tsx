@@ -7,6 +7,7 @@ import { twMerge } from "tailwind-merge";
 import TASKCATEGORIES from "@/lib/taskCategories";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface TaskColumnTypes {
   categoryId: number;
@@ -19,14 +20,7 @@ const TaskColumn = ({ categoryId, children, taskLength }: TaskColumnTypes) => {
     isNeedToAddTask: false,
   });
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { setNodeRef, transform, transition } = useSortable({
     id: categoryId,
     data: {
       type: "container",
@@ -34,7 +28,9 @@ const TaskColumn = ({ categoryId, children, taskLength }: TaskColumnTypes) => {
   });
 
   return (
-    <div
+    <motion.div
+      initial={{ y: -10, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
       ref={setNodeRef}
       style={{
         transition,
@@ -66,7 +62,10 @@ const TaskColumn = ({ categoryId, children, taskLength }: TaskColumnTypes) => {
         </div>
         <label
           htmlFor=""
-          className="cursor-pointer"
+          className={twMerge(
+            "cursor-pointer transition-all",
+            Config.isNeedToAddTask && "rotate-45",
+          )}
           onClick={updateConfig.bind(
             this,
             "isNeedToAddTask",
@@ -80,24 +79,30 @@ const TaskColumn = ({ categoryId, children, taskLength }: TaskColumnTypes) => {
       <div className="mt-6 flex flex-col gap-3">
         {children}
 
-        {Config.isNeedToAddTask && (
-          <AddTask
-            close={updateConfig.bind(this, "isNeedToAddTask", false)}
-            categoryId={categoryId}
-            onTaskAdded={() => {}}
-          />
-        )}
-        {!Config.isNeedToAddTask && (
-          <button
-            onClick={updateConfig.bind(this, "isNeedToAddTask", true)}
-            className="b1 mt- flex w-full flex-row items-center justify-center gap-3 p-3 font-semibold text-dark-300"
-          >
-            <Add />
-            Add Task
-          </button>
-        )}
+        <AnimatePresence>
+          {Config.isNeedToAddTask && (
+            <AddTask
+              close={updateConfig.bind(this, "isNeedToAddTask", false)}
+              categoryId={categoryId}
+              onTaskAdded={() => {}}
+            />
+          )}
+          {!Config.isNeedToAddTask && (
+            <motion.button
+              initial={{ y: -60, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -60, opacity: 0 }}
+              transition={{ delay: (taskLength - 1) * 0.2 }}
+              onClick={updateConfig.bind(this, "isNeedToAddTask", true)}
+              className="b1 mt- flex w-full flex-row items-center justify-center gap-3 p-3 font-semibold text-dark-300"
+            >
+              <Add />
+              Add Task
+            </motion.button>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

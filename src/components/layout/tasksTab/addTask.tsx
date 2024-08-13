@@ -11,6 +11,7 @@ import SelectDate from "./selectDate";
 import { twMerge } from "tailwind-merge";
 import { TaskInfoTypes } from "@/types/taskInfo";
 import { addTask } from "@/redux/actions/taskActions";
+import { motion } from "framer-motion";
 
 interface AddTaskTypes {
   close: () => void;
@@ -49,7 +50,12 @@ const AddTask = ({ close, categoryId, onTaskAdded }: AddTaskTypes) => {
   });
 
   return (
-    <div className="flex w-full flex-col rounded-xl border-1 border-dark-50 bg-white text-dark-300">
+    <motion.div
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0, opacity: 0 }}
+      className="flex w-full flex-col rounded-xl border-1 border-dark-50 bg-white text-dark-300"
+    >
       <form onSubmit={formik.handleSubmit}>
         <div className="relative flex flex-row items-center gap-3 border-b-1 border-dark-50 p-4">
           <TickCircle />
@@ -63,6 +69,7 @@ const AddTask = ({ close, categoryId, onTaskAdded }: AddTaskTypes) => {
             value={formik.values.task}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            autoFocus
           />
           {formik.touched.task && formik.errors.task ? (
             <label className="absolute -top-3 right-2 whitespace-nowrap rounded-md border-1 border-solid border-danger-500 bg-danger-50 px-2 text-danger-500 shadow-custom-shadow">
@@ -99,7 +106,7 @@ const AddTask = ({ close, categoryId, onTaskAdded }: AddTaskTypes) => {
           />
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

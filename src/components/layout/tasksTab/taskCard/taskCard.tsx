@@ -10,13 +10,16 @@ import TaskHeader from "./taskHeader";
 import TaskAttributes from "./taskAttributes";
 import TaskRemainTime from "./taskRemainingTime";
 import { Category } from "iconsax-react";
+import { motion } from "framer-motion";
 
 const TaskCard = ({
   id,
   TaskInfo,
+  animeDelay,
 }: {
   id: UniqueIdentifier;
   TaskInfo: ModifiedTaskInfoTypes;
+  animeDelay?: number;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
@@ -32,7 +35,11 @@ const TaskCard = ({
   };
 
   return (
-    <div
+    <motion.div
+      initial={{ scale: 0, opacity: 0.5 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0, opacity: 0.5 }}
+      transition={{ delay: (animeDelay || 0) * 0.2 }}
       ref={setNodeRef}
       {...attributes}
       style={{
@@ -56,7 +63,7 @@ const TaskCard = ({
       >
         <Category size={18} variant="Bold" />
       </button>
-    </div>
+    </motion.div>
   );
 };
 
