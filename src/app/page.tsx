@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, Hierarchy } from "iconsax-react";
 import { useRouter } from "next/navigation";
 import ROUTES from "@/lib/routes";
+import PopBubble from "@/components/ui/popBubble";
+import PopBubbleController from "@/components/ui/popBubbleController";
 
 export default function Home() {
   const { push } = useRouter();
@@ -16,10 +18,10 @@ export default function Home() {
         className="relative flex aspect-square w-20 items-center justify-center rounded-xl bg-white"
       >
         <Image
-          src={"/images/code94labsLogo.png"}
-          alt="code94labs-logo"
-          width={43}
-          height={43}
+          src={"/images/verified.png"}
+          alt="verified-logo"
+          width={60}
+          height={60}
         />
       </motion.div>
       <motion.h1
@@ -71,12 +73,13 @@ export default function Home() {
         className="absolute -top-[1500px] z-[-1] aspect-square w-full rounded-full bg-gradient-to-b from-dark-200 to-transparent"
       ></motion.div>
 
+      <PopBubbleController />
       <label
         htmlFor=""
         className="absolute bottom-2 right-2 flex flex-row items-center gap-2 rounded-lg bg-white px-3 py-1 shadow-custom-shadow"
       >
         <span className="c1">By</span>
-        <span className="c1 font-semibold">Code94 Labs</span>
+        <span className="c1 font-semibold">Dinuka Nilupul</span>
       </label>
     </main>
   );
