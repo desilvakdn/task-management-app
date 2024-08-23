@@ -12,7 +12,10 @@ const PopBubbleController = () => {
 
   useEffect(() => {
     const createBubble = () => {
-      setBubbles((prev) => [...prev, { id: Math.random(), key: Date.now() }]);
+      setBubbles((prev) => [
+        ...prev,
+        { id: Math.random(), key: Math.round(Math.random() * 100000000) },
+      ]);
     };
 
     const intervalId = setInterval(() => {
